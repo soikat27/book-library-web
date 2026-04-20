@@ -1,7 +1,7 @@
 // Library array
 const myLibrary = [
-    {title: "math", author: "keir", pageCount: 20},
-    {title: "cs", author: "ivaylo", pageCount: 35}
+    {title: "math", author: "keir", totalPages: 44},
+    {title: "cs", author: "ivaylo", totalPages: 35}
 ];
 
 // Book constructor
@@ -33,17 +33,30 @@ function displayBooks()
         const title = book.title;
         const author = book.author;
         const totalPages = book.totalPages;
-        const bookColumn = document.createElement("div");
-        bookColumn.classList.add("book");
-        bookColumn.textContent = `The book titled ${title}, authored by ${author} has ${totalPages} pages.`;
 
-        bookshelf.appendChild(bookColumn);
+        createBookColumn(title, author, totalPages);
     }
 }
 displayBooks();
 
-function createBookColumn(title, author, totalPages, readStatus)
+function createBookColumn(title, author, totalPages)
 {
-    
+    const html = `
+    <div class="book">
+      <h3 class="title">${title}</h3>
+      <h3 class="author">${author}</h3>
+      <h3 class="pc">${totalPages}</h3>
+      <div>
+        <input type="checkbox" class="rs">
+        <button class="remove">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 30 30">
+                <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16.414,15 c0,0,3.139,3.139,3.293,3.293c0.391,0.391,0.391,1.024,0,1.414c-0.391,0.391-1.024,0.391-1.414,0C18.139,19.554,15,16.414,15,16.414 s-3.139,3.139-3.293,3.293c-0.391,0.391-1.024,0.391-1.414,0c-0.391-0.391-0.391-1.024,0-1.414C10.446,18.139,13.586,15,13.586,15 s-3.139-3.139-3.293-3.293c-0.391-0.391-0.391-1.024,0-1.414c0.391-0.391,1.024-0.391,1.414,0C11.861,10.446,15,13.586,15,13.586 s3.139-3.139,3.293-3.293c0.391-0.391,1.024-0.391,1.414,0c0.391,0.391,0.391,1.024,0,1.414C19.554,11.861,16.414,15,16.414,15z"></path>
+            </svg>
+        </button>
+      </div>
+    </div>
+    <hr>`;
+
+    bookshelf.insertAdjacentHTML("beforeend", html);
 }
 
