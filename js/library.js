@@ -5,21 +5,21 @@ const myLibrary = [
 ];
 
 // Book constructor
-function Book(title, author, pageCount, readStatus)
+function Book(title, author, totalPages, readStatus)
 {
     if (!new.target)
         throw Error("Missing 'new' operator while constructing object instances");
 
     this.title = title;
     this.author = author;
-    this.pageCount = pageCount;
+    this.totalPages = totalPages;
     this.readStatus = readStatus;
 }
 
 // Add book to the library
 function addBookToLibrary()
 {
-
+    
 }
 
 // Display books on the page
