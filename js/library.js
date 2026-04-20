@@ -25,20 +25,25 @@ function addBookToLibrary()
 }
 
 // Display books on the page
-const main = document.querySelector(".main");
+const bookshelf = document.querySelector(".middle");
 function displayBooks()
 {
     for (const book of myLibrary)
     {
         const title = book.title;
         const author = book.author;
-        const pageCount = book.pageCount;
-        const bookCard = document.createElement("div");
-        bookCard.classList.add("book");
-        bookCard.textContent = `The book titled ${title}, authored by ${author} has ${pageCount} pages.`;
+        const totalPages = book.totalPages;
+        const bookColumn = document.createElement("div");
+        bookColumn.classList.add("book");
+        bookColumn.textContent = `The book titled ${title}, authored by ${author} has ${totalPages} pages.`;
 
-        main.appendChild(bookCard);
+        bookshelf.appendChild(bookColumn);
     }
 }
 displayBooks();
+
+function createBookColumn(title, author, totalPages, readStatus)
+{
+    
+}
 
