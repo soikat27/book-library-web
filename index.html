@@ -21,9 +21,35 @@
         <div class="shelf">
             <div class="top">
                 <h2>bookshelf</h2>
-                <button class="add-book">Add book</button>
-                
+                <button class="add-book" command="show-modal" commandfor="temp">Add book</button>
             </div>
+            <!-- dialog modal for adding books -->
+             <dialog id="temp">
+                <form id="book-form">
+                    <h3>add book</h3>
+                    <div class="input title">
+                        <label for="title">TITLE</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="input author">
+                        <label for="author">AUTHOR</label>
+                        <input type="text" id="author" required>
+                    </div>
+                    <div class="input page">
+                        <label for="pc">TOTAL PAGES</label>
+                        <input type="number" id="pc" required>
+                    </div>
+                    <dic class="input read">
+                        <label for="read">Have you read the book?</label>
+                        <input type="checkbox" id="read">
+                    </dic>
+                    <div class="buttons">
+                        <button type="button" class="cancel">Cancel</button>
+                        <button type="submit" class="add-to-lib">add to the library</button>
+                    </div>
+                </form>
+            </dialog>
+
             <div class="middle">
                 <div class="col-head">
                     <div class="title">
