@@ -122,21 +122,22 @@ h1, h2, h3 {
     font-family: var(--serif-font);
     font-weight: 700;
 }
-.add-book {
-    border: 1px solid transparent;
+.log-in {
+    border: 1px solid var(--text-charcoal);
     padding: 0.8rem 1.5rem;
-    background-color: var(--text-charcoal);
-    color: var(--inner-panel);
+    color: var(--text-charcoal);
+    background-color: var(--inner-panel);
     font-family: var(--sans-serif-font);
     font-weight: 500;
     border-radius: 5rem;
     cursor: pointer;
 }
-.add-book:hover {
-    background-color: var(--inner-panel);
-    color: var(--text-charcoal);
-    border: 1px solid var(--text-charcoal);
+.log-in:hover {
+    color: var(--inner-panel);
+    background-color: var(--text-charcoal);
+    border: 1px solid transparent;
 }
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -177,20 +178,20 @@ h1, h2, h3 {
 h2 {
     font-size: 1.8rem;
 }
-.log-in {
-    border: 1px solid var(--text-charcoal);
+.add-book {
+    border: 1px solid transparent;
     padding: 0.8rem 1.5rem;
-    color: var(--text-charcoal);
-    background-color: var(--inner-panel);
+    background-color: var(--text-charcoal);
+    color: var(--inner-panel);
     font-family: var(--sans-serif-font);
     font-weight: 500;
     border-radius: 5rem;
     cursor: pointer;
 }
-.log-in:hover {
-    color: var(--inner-panel);
-    background-color: var(--text-charcoal);
-    border: 1px solid transparent;
+.add-book:hover {
+    background-color: var(--inner-panel);
+    color: var(--text-charcoal);
+    border: 1px solid var(--text-charcoal);
 }
 
 .middle {
