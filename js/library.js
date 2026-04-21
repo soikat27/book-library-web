@@ -1,7 +1,6 @@
 // Library array
 const myLibrary = [
-    {title: "math", author: "keir", totalPages: 44},
-    {title: "cs", author: "ivaylo", totalPages: 35}
+    
 ];
 
 // Book constructor
@@ -15,7 +14,6 @@ function Book(title, author, totalPages, readStatus)
     this.author = author;
     this.totalPages = totalPages;
     this.readStatus = readStatus;
-    
 }
 
 // Add book to the library
@@ -30,7 +28,7 @@ function addBookToLibrary(e)
     const read = document.getElementById("read").checked;
 
     const newBook = new Book(title, author, pages, read);
-    createBookColumn(title, author, pages);
+    createBookColumn(title, author, pages, newBook.id);
     myLibrary.push(newBook);
     dialog.close();
 }
@@ -44,16 +42,19 @@ function displayBooks()
         const title = book.title;
         const author = book.author;
         const totalPages = book.totalPages;
+        const bookId = book.id;
+        console.log(bookId);
 
-        createBookColumn(title, author, totalPages);
+        createBookColumn(title, author, totalPages, bookId);
     }
 }
 
 
-function createBookColumn(title, author, totalPages)
+function createBookColumn(title, author, totalPages, bookId)
 {
+    console.log(bookId);
     const html = `
-    <div class="book">
+    <div class="book" data-id=${bookId}>
       <h3 class="title">${title}</h3>
       <h3 class="author">${author}</h3>
       <h3 class="pc">${totalPages}</h3>
@@ -81,6 +82,22 @@ document.querySelector(".cancel").addEventListener("click", () => {
     dialog.close();
 });
 form.addEventListener("submit", addBookToLibrary);
+
+document.querySelector(".middle").addEventListener("click", function (e) {
+    if (e.target.closest(".remove"))
+    {
+        const book = e.target.closest(".book");
+        const adjHr = book.nextElementSibling;
+        const bookId = book.dataset.id;
+
+        // remove from the library array
+        myLibrary.filter(book => book.id !== bookId);
+
+        // remove from UI
+        book.remove();
+        adjHr.remove();
+    }
+});
 
 
 displayBooks();
