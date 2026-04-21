@@ -19,9 +19,20 @@ function Book(title, author, totalPages, readStatus)
 }
 
 // Add book to the library
-function addBookToLibrary()
+const form = document.querySelector("#book-form");
+function addBookToLibrary(e)
 {
+    e.preventDefault();
 
+    const title = document.getElementById("title").value;
+    const author = document.getElementById("author").value;
+    const pages = document.getElementById("pc").value;
+    const read = document.getElementById("read").checked;
+
+    const newBook = new Book(title, author, pages, read);
+    createBookColumn(title, author, pages);
+    myLibrary.push(newBook);
+    dialog.close();
 }
 
 // Display books on the page
@@ -37,7 +48,7 @@ function displayBooks()
         createBookColumn(title, author, totalPages);
     }
 }
-displayBooks();
+
 
 function createBookColumn(title, author, totalPages)
 {
@@ -60,3 +71,17 @@ function createBookColumn(title, author, totalPages)
     bookshelf.insertAdjacentHTML("beforeend", html);
 }
 
+// add event listeners
+const dialog = document.querySelector("dialog");
+
+document.querySelector(".add-book").addEventListener("click", () => {
+    dialog.showModal();
+});
+document.querySelector(".cancel").addEventListener("click", () => {
+    dialog.close();
+});
+form.addEventListener("submit", addBookToLibrary);
+
+
+displayBooks();
+console.log(myLibrary);
