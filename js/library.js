@@ -93,5 +93,10 @@ bookshelf.addEventListener("click", function (event) {
     }
 });
 
+// Temp: show log-in feature not available
+document.querySelector(".log-in").addEventListener("click", function () {
+    alert("This feature is not available at this moment. Please check back later.")
+})
+
 
 displayBooks();
