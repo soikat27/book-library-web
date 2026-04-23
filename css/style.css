@@ -76,7 +76,7 @@ h6 {
   isolation: isolate;
 }
 
-/* css rules start here */
+/* project styles start here */
 @font-face {
     font-family: 'Playfair display';
     src: url(../assets/font/playfair-display/PlayfairDisplay-Black.ttf);
@@ -99,14 +99,14 @@ h6 {
 }
 
 :root {
-    color: var(--text-color);
+    --text-color: #2A241E;
     --serif-font: 'Playfair display', serif;
     --sans-serif-font: 'Segoe UI', sans-serif;
-    --text-charcoal: #2A241E;
     --inner-panel: #F6F5F0;
     --page-off-white: #EDEAE3;
 }
 body {
+    color: var(--text-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -114,27 +114,32 @@ body {
 }
 /* header setup... */
 svg {
-    width: 3rem;
-    height: auto;
-    fill: var(--text-color);
+  width: 3rem;
+  height: auto;
+  fill: var(--text-color);
 }
-h1, h2, h3 {
-    font-family: var(--serif-font);
-    font-weight: 700;
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif-font);
+  font-weight: 700;
 }
-.log-in, .cancel {
-    border: 1px solid var(--text-charcoal);
-    padding: 0.8rem 1.5rem;
-    color: var(--text-charcoal);
-    background-color: var(--inner-panel);
-    font-family: var(--sans-serif-font);
-    font-weight: 500;
-    border-radius: 5rem;
-    cursor: pointer;
+
+.log-in,
+.cancel {
+  border: 1px solid var(--text-color);
+  padding: 0.8rem 1.5rem;
+  color: var(--text-color);
+  background-color: var(--inner-panel);
+  font-family: var(--sans-serif-font);
+  font-weight: 500;
+  border-radius: 5rem;
+  cursor: pointer;
 }
 .log-in:hover {
     color: var(--inner-panel);
-    background-color: var(--text-charcoal);
+    background-color: var(--text-color);
     border: 1px solid transparent;
 }
 
@@ -143,7 +148,7 @@ h1, h2, h3 {
     justify-content: space-between;
     align-items: center;
     padding: 3rem 20%;
-    border-bottom: 1px solid var(--text-charcoal);
+    border-bottom: 1px solid var(--text-color);
 }
 .left {
     display: flex;
@@ -158,7 +163,7 @@ h1, h2, h3 {
     align-items: center;
 }
 .shelf {
-    border: 1px solid var(--text-charcoal);
+    border: 1px solid var(--text-color);
     border-radius: 0.8rem;
     width: 60%;
     height: 60vh;
@@ -172,7 +177,7 @@ h1, h2, h3 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--text-charcoal);
+    border-bottom: 1px solid var(--text-color);
     padding: 1.8rem;
 }
 h2 {
@@ -181,7 +186,7 @@ h2 {
 .add-book, .add-to-lib {
     border: 1px solid transparent;
     padding: 0.8rem 1.5rem;
-    background-color: var(--text-charcoal);
+    background-color: var(--text-color);
     color: var(--inner-panel);
     font-family: var(--sans-serif-font);
     font-weight: 500;
@@ -190,23 +195,26 @@ h2 {
 }
 .add-book:hover {
     background-color: var(--inner-panel);
-    color: var(--text-charcoal);
-    border: 1px solid var(--text-charcoal);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
 }
 
 .middle {
-    padding: 1rem 1.8rem;
-    margin-bottom: 2rem;
-    overflow-y: auto;
+  padding: 1rem 1.8rem;
+  margin-bottom: 2rem;
+  overflow-y: auto;
 }
-.col-head, .book{
-    display: grid;
-    grid-template-columns: 4fr 3fr 1fr 2fr;
-    gap: 2rem;
-    align-items: end;
+
+.col-head,
+.book {
+  display: grid;
+  grid-template-columns: 4fr 3fr 1fr 2fr;
+  gap: 2rem;
+  align-items: end;
 }
+
 .col-head h3 {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .book {
@@ -219,7 +227,7 @@ h2 {
 }
 
 input[type="checkbox"] {
-    accent-color: var(--text-charcoal);
+    accent-color: var(--text-color);
     transform: scale(1.5);
 }
 .remove {
@@ -228,7 +236,7 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 .remove:hover {
-    border: 1px solid var(--text-charcoal);
+    border: 1px solid var(--text-color);
     color: var(--inner-panel);
 }
 .book div {
@@ -299,7 +307,7 @@ input[type="text"], input[type="number"] {
     border: 1px solid #53525060;
 }
 .read label {
-    color: var(--text-charcoal);
+    color: var(--text-color);
 }
 .buttons {
     display: flex;
@@ -320,8 +328,8 @@ input[type="text"], input[type="number"] {
 .add-to-lib:hover {
     opacity: 0.90;
 }
-
 .cancel:hover {
     background-color: var(--page-off-white);
 }
+
 

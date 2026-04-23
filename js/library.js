@@ -1,7 +1,5 @@
 // Library array
-const myLibrary = [
-    
-];
+var myLibrary = [];
 
 // Book constructor
 function Book(title, author, totalPages, readStatus)
@@ -18,9 +16,14 @@ function Book(title, author, totalPages, readStatus)
 
 // Add book to the library
 const form = document.querySelector("#book-form");
-function addBookToLibrary(e)
+const bookshelf = document.querySelector(".middle");
+const dialog = document.querySelector("dialog");
+const addBookButton = document.querySelector(".add-book");
+const cancelButton = document.querySelector(".cancel");
+
+function addBookToLibrary(event)
 {
-    e.preventDefault();
+    event.preventDefault();
 
     const title = document.getElementById("title").value;
     const author = document.getElementById("author").value;
@@ -33,28 +36,19 @@ function addBookToLibrary(e)
     dialog.close();
 }
 
-// Display books on the page
-const bookshelf = document.querySelector(".middle");
 function displayBooks()
 {
     for (const book of myLibrary)
     {
-        const title = book.title;
-        const author = book.author;
-        const totalPages = book.totalPages;
-        const bookId = book.id;
-        console.log(bookId);
-
-        createBookColumn(title, author, totalPages, bookId);
+        createBookColumn(book.title, book.author, book.totalPages, book.id);
     }
 }
 
 
 function createBookColumn(title, author, totalPages, bookId)
 {
-    console.log(bookId);
     const html = `
-    <div class="book" data-id=${bookId}>
+    <div class="book" data-id="${bookId}">
       <h3 class="title">${title}</h3>
       <h3 class="author">${author}</h3>
       <h3 class="pc">${totalPages}</h3>
@@ -72,33 +66,32 @@ function createBookColumn(title, author, totalPages, bookId)
     bookshelf.insertAdjacentHTML("beforeend", html);
 }
 
-// add event listeners
-const dialog = document.querySelector("dialog");
-
-document.querySelector(".add-book").addEventListener("click", () => {
+addBookButton.addEventListener("click", () => {
     dialog.showModal();
 });
-document.querySelector(".cancel").addEventListener("click", () => {
+cancelButton.addEventListener("click", () => {
     dialog.close();
 });
 form.addEventListener("submit", addBookToLibrary);
 
-document.querySelector(".middle").addEventListener("click", function (e) {
-    if (e.target.closest(".remove"))
+bookshelf.addEventListener("click", function (event) {
+    if (event.target.closest(".remove"))
     {
-        const book = e.target.closest(".book");
+        const book = event.target.closest(".book");
+        if (!book)
+            return;
         const adjHr = book.nextElementSibling;
         const bookId = book.dataset.id;
 
         // remove from the library array
-        myLibrary.filter(book => book.id !== bookId);
+        myLibrary = myLibrary.filter(book => book.id !== bookId);
 
         // remove from UI
         book.remove();
-        adjHr.remove();
+        if (adjHr)
+            adjHr.remove();
     }
 });
 
 
 displayBooks();
-console.log(myLibrary);
