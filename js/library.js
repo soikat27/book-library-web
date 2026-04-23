@@ -34,6 +34,8 @@ function addBookToLibrary(event)
     createBookColumn(title, author, pages, newBook.id, read);
     myLibrary.push(newBook);
     dialog.close();
+
+    form.reset();
 }
 
 function displayBooks()
