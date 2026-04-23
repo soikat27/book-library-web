@@ -14,6 +14,10 @@ function Book(title, author, totalPages, readStatus)
     this.readStatus = readStatus;
 }
 
+Book.prototype.toggleReadStatus = function () {
+    this.readStatus = !this.readStatus;
+};
+
 // Add book to the library
 const form = document.querySelector("#book-form");
 const bookshelf = document.querySelector(".middle");
@@ -102,9 +106,7 @@ bookshelf.addEventListener("click", function (event) {
         const bookId = bookElement.dataset.id;
 
         const book = myLibrary.find(book => book.id === bookId);
-        book.readStatus = !book.readStatus;
-
-        console.log(myLibrary);
+        book.toggleReadStatus();
     }
 });
 
