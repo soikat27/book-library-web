@@ -1,119 +1,196 @@
-// Library array
-var myLibrary = [];
+/**
+ * Book Library — browser UI for a small in-memory reading list.
+ *
+ * Architecture:
+ * - Book: domain model (identity + fields + behavior).
+ * - myLibrary: IIFE module — owns the canonical array; only exported methods mutate it.
+ * - myLibraryUi: IIFE module — DOM queries, delegated events, and re-render from library state.
+ *
+ * Data flow: user action → update myLibrary → displayBooks() rebuilds rows from getAllBooks().
+ * No persistence yet; state resets on full page reload.
+ */
 
-// Book constructor
-function Book(title, author, totalPages, readStatus)
-{
-    if (!new.target)
-        throw Error("Missing 'new' operator while constructing object instances");
+/**
+ * Represents one shelf entry. crypto.randomUUID() gives a stable key for DOM data-id
+ * and for lookups after re-renders (rebuild replaces nodes; ids tie UI back to data).
+ */
+class Book {
+    // constructor
+    constructor (title, author, totalPages, readStatus) {
+        this.id = crypto.randomUUID();
+        this.title = title;
+        this.author = author;
+        this.totalPages = totalPages;
+        this.readStatus = readStatus;
+    }
 
-    this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.totalPages = totalPages;
-    this.readStatus = readStatus;
-}
-
-Book.prototype.toggleReadStatus = function () {
-    this.readStatus = !this.readStatus;
-};
-
-// Add book to the library
-const form = document.querySelector("#book-form");
-const bookshelf = document.querySelector(".middle");
-const dialog = document.querySelector("dialog");
-const addBookButton = document.querySelector(".add-book");
-const cancelButton = document.querySelector(".cancel");
-
-function addBookToLibrary(event)
-{
-    event.preventDefault();
-
-    const title = document.getElementById("title").value;
-    const author = document.getElementById("author").value;
-    const pages = document.getElementById("pc").value;
-    const read = document.getElementById("read").checked;
-
-    const newBook = new Book(title, author, pages, read);
-    createBookColumn(title, author, pages, newBook.id, read);
-    myLibrary.push(newBook);
-    dialog.close();
-
-    form.reset();
-}
-
-function displayBooks()
-{
-    for (const book of myLibrary)
-    {
-        createBookColumn(book.title, book.author, book.totalPages, book.id);
+    // methods
+    toggleReadStatus() {
+        this.readStatus = !this.readStatus;
     }
 }
 
+/**
+ * Library data layer (module pattern).
+ * - `bookshelf` is private to this closure — not exported — so callers can’t splice/replace
+ *   the backing store accidentally.
+ * - Mutations go through addBook / removeBook / toggleReadStatus only.
+ * - getAllBooks returns a shallow array copy so iteration is safe without leaking the live array.
+ */
+const myLibrary = (() => {
+    let bookshelf = [];
 
-function createBookColumn(title, author, totalPages, bookId, readStatus)
-{
-    const html = `
-    <div class="book" data-id="${bookId}">
-    <h3 class="title">${title}</h3>
-    <h3 class="author">${author}</h3>
-    <h3 class="pc">${totalPages}</h3>
-    <div>
-        <input type="checkbox" class="rs" ${readStatus ? "checked" : ""}>
-        <button class="remove">
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 30 30">
-                <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16.414,15 c0,0,3.139,3.139,3.293,3.293c0.391,0.391,0.391,1.024,0,1.414c-0.391,0.391-1.024,0.391-1.414,0C18.139,19.554,15,16.414,15,16.414 s-3.139,3.139-3.293,3.293c-0.391,0.391-1.024,0.391-1.414,0c-0.391-0.391-0.391-1.024,0-1.414C10.446,18.139,13.586,15,13.586,15 s-3.139-3.139-3.293-3.293c-0.391-0.391-0.391-1.024,0-1.414c0.391-0.391,1.024-0.391,1.414,0C11.861,10.446,15,13.586,15,13.586 s3.139-3.139,3.293-3.293c0.391-0.391,1.024-0.391,1.414,0c0.391,0.391,0.391,1.024,0,1.414C19.554,11.861,16.414,15,16.414,15z"></path>
-            </svg>
-        </button>
-    </div>
-    </div>
-    <hr>`;
-
-    bookshelf.insertAdjacentHTML("beforeend", html);
-}
-
-addBookButton.addEventListener("click", () => {
-    dialog.showModal();
-});
-cancelButton.addEventListener("click", () => {
-    dialog.close();
-});
-form.addEventListener("submit", addBookToLibrary);
-
-bookshelf.addEventListener("click", function (event) {
-    if (event.target.closest(".remove"))
-    {
-        const book = event.target.closest(".book");
-        if (!book)
-            return;
-        const adjHr = book.nextElementSibling;
-        const bookId = book.dataset.id;
-
-        // remove from the library array
-        myLibrary = myLibrary.filter(book => book.id !== bookId);
-
-        // remove from UI
-        book.remove();
-        if (adjHr)
-            adjHr.remove();
+    function addBook (title, author, totalPages, readStatus) {
+        const book = new Book (title, author, totalPages, readStatus);
+        bookshelf.push(book);
     }
 
-    else if (event.target.closest(".rs"))
-    {
-        const bookElement = event.target.closest(".book");
-        if (!bookElement)
-            return;
-        const bookId = bookElement.dataset.id;
-
-        const book = myLibrary.find(book => book.id === bookId);
-        book.toggleReadStatus();
+    function removeBook (bookId) {
+        bookshelf = bookshelf.filter(book => book.id !== bookId);
     }
-});
+
+    function toggleReadStatus (bookId) {
+        const book = bookshelf.find(book => book.id === bookId);
+        if (book)
+            book.toggleReadStatus();
+    }
+
+    /**
+     * Shallow copy of the book list. Same Book object references as the internal array,
+     * but a new array instance — callers can’t push/pop the canonical shelf through this return value.
+     */
+    function getAllBooks () {
+        return [...bookshelf]; // return a shallow copy
+    }
+
+    return {addBook, removeBook, toggleReadStatus, getAllBooks};
+})();
+
+/**
+ * Presentation + wiring. Keeps DOM concerns out of the data module.
+ * Event delegation on `.middle`: one listener surface for dynamically added rows (no per-row listeners).
+ */
+const myLibraryUi = (() => {
+    // DOM elements...
+    const form = document.querySelector("#book-form");
+    const bookshelf = document.querySelector(".middle");
+    const dialog = document.querySelector("dialog");
+    const addBookButton = document.querySelector(".add-book");
+    const cancelButton = document.querySelector(".cancel");
+
+    function displayBooks() {
+        clearBookshelf();
+
+        for (const book of myLibrary.getAllBooks())
+            createBookColumn(book.title, book.author, book.totalPages, book.id, book.readStatus);
+    }
+
+    /**
+     * Removes every child under the shelf except `.col-head` (static header row in HTML).
+     * Uses [...children] because `children` is a live HTMLCollection — mutating the DOM while
+     * iterating it in place can skip siblings (e.g. orphan <hr> after each redraw).
+     */
+    function clearBookshelf () {
+        [...bookshelf.children].forEach((child) => {
+            if (!child.classList.contains("col-head"))
+                child.remove();
+        });
+    }
+
+    /**
+     * One row template: book container + trailing separator. readStatus seeds the checkbox;
+     * after toggles, displayBooks() re-syncs from model so UI matches data.
+     */
+    function createBookColumn(title, author, totalPages, bookId, readStatus)
+    {
+        const html = `
+        <div class="book" data-id="${bookId}">
+            <h3 class="title">${title}</h3>
+            <h3 class="author">${author}</h3>
+            <h3 class="pc">${totalPages}</h3>
+            <div>
+                <input type="checkbox" class="rs" ${readStatus ? "checked" : ""}>
+                <button class="remove">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 30 30">
+                        <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M16.414,15 c0,0,3.139,3.139,3.293,3.293c0.391,0.391,0.391,1.024,0,1.414c-0.391,0.391-1.024,0.391-1.414,0C18.139,19.554,15,16.414,15,16.414 s-3.139,3.139-3.293,3.293c-0.391,0.391-1.024,0.391-1.414,0c-0.391-0.391-0.391-1.024,0-1.414C10.446,18.139,13.586,15,13.586,15 s-3.139-3.139-3.293-3.293c-0.391-0.391-0.391-1.024,0-1.414c0.391-0.391,1.024-0.391,1.414,0C11.861,10.446,15,13.586,15,13.586 s3.139-3.139,3.293-3.293c0.391-0.391,1.024-0.391,1.414,0c0.391,0.391,0.391,1.024,0,1.414C19.554,11.861,16.414,15,16.414,15z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <hr>`;
+
+        bookshelf.insertAdjacentHTML("beforeend", html);
+    }
+
+    /**
+     * Wires global controls (dialog, form) and delegated shelf clicks.
+     * removeBook / toggleReadStatus filter by event target so clicks on nested SVG still resolve.
+     */
+    function setEventListeners() {
+        // add/remove books/toggle read-status
+        addBookButton.addEventListener("click", () => {
+            dialog.showModal();
+        });
+        bookshelf.addEventListener("click", removeBook);
+        bookshelf.addEventListener("click", toggleReadStatus);
+
+        // form buttons
+        form.addEventListener("submit", addBook);
+        cancelButton.addEventListener("click", () => {
+            dialog.close();
+        });
+    }
+
+    function addBook(event)
+    {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const pages = document.getElementById("pc").value;
+        const read = document.getElementById("read").checked;
+
+        myLibrary.addBook(title, author, pages, read);
+        displayBooks();
+
+        dialog.close();
+        form.reset();
+    }
+
+    function removeBook(event) {
+        if (event.target.closest(".remove"))
+        {
+            const book = event.target.closest(".book");
+            if (!book)
+                return;
+            const bookId = book.dataset.id;
+
+            // remove from the library array
+            myLibrary.removeBook (bookId);
+            displayBooks();
+        }
+    }
+
+    function toggleReadStatus (event) {
+        if (event.target.closest(".rs"))
+        {
+            const book = event.target.closest(".book");
+            if (!book)
+                return;
+            const bookId = book.dataset.id;
+
+            myLibrary.toggleReadStatus(bookId);
+            displayBooks();
+        }
+    }
+
+    // Initialize the app
+    setEventListeners();
+    displayBooks();
+
+})();
 
 // Temp: show log-in feature not available
 document.querySelector(".log-in").addEventListener("click", function () {
     alert("This feature is not available at this moment. Please check back later.")
 })
-
-
-displayBooks();
