@@ -6,14 +6,20 @@ There’s no backend here yet (`coming soon!`) — everything lives in memory wh
 
 This was built as a learning / portfolio piece (thanks to **The Odin Project** community for the guidance, but with my own styling). If you’re poking at the code, you’ll see how the book model is wired to the DOM with event delegation, and how the modal form stays separate from the list rendering.
 
+### What’s on `main` (current code)
+
+The **default branch** now uses an **ES6 `class`** for `Book` plus **IIFE-style modules**: `myLibrary` holds the in-memory shelf (private array, public methods, `getAllBooks()` returns a shallow copy), and `myLibraryUi` handles the DOM and delegated events. That structure was merged from the **`oop-class`** line of work into `main`, so what you clone or see on GitHub Pages matches this version. Older branches may still have a **constructor / prototype** `Book` implementation if you want to compare approaches side by side.
+
 <p align="center">
   <img src="assets/web-preview.png" alt="Web preview of the library app" width="480">
 </p>
 
 #### Key engineering concepts used in this project
 
-- Constructor + prototype pattern for `Book` instances (`toggleReadStatus`, stable `id` via `crypto.randomUUID()`)
-- Event-driven UI: form submit, dialog open/close, delegated clicks for remove + read checkbox
+- **`Book` as an ES6 class** — instances get a stable `id` from `crypto.randomUUID()` and a `toggleReadStatus()` method
+- **IIFE modules** — `myLibrary` (data) and `myLibraryUi` (view / events) without a bundler
+- **Encapsulation** — the backing array lives in a closure; `getAllBooks()` returns a **shallow copy** for safe iteration
+- Event-driven UI: form submit, `<dialog>` open/close, delegated clicks for remove + read checkbox
 - Native `<dialog>` for the add-book flow (no extra modal library)
 - Layout and typography handled in CSS (custom font, shelf-style table)
 
@@ -86,7 +92,8 @@ It’s static files only. This repo is served with **GitHub Pages** at [https://
 ## Built with
 
 - Plain **HTML**, **CSS**, and **JavaScript** (no framework)
-- **`Book` constructor** + prototype methods for behavior
+- **`Book` ES6 class** — model + instance methods
+- **IIFE modules** — `myLibrary` (state) + `myLibraryUi` (DOM / listeners)
 - **`<dialog>`** for the add-book modal
 - **`crypto.randomUUID()`** for per-book ids
 
