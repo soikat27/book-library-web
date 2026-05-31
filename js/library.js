@@ -139,11 +139,23 @@ const myLibraryUi = (() => {
         cancelButton.addEventListener("click", () => {
             dialog.close();
         });
+
+        // form input validation
+        document.getElementById("title").addEventListener("input", validateTextFields);
+        document.getElementById("author").addEventListener("input", validateTextFields);
+        document.getElementById("pc").addEventListener("input", validateTextFields);
     }
 
     function addBook(event)
     {
         event.preventDefault();
+        const form = event.currentTarget;
+        validateTextFields();
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }    
 
         const title = document.getElementById("title").value;
         const author = document.getElementById("author").value;
@@ -182,6 +194,27 @@ const myLibraryUi = (() => {
             myLibrary.toggleReadStatus(bookId);
             displayBooks();
         }
+    }
+
+    function validateTextFields(event) {
+        const title  = document.getElementById("title");
+        const author = document.getElementById("author");
+        const pc     = document.getElementById("pc");
+        
+        // 1. clear old custom validation
+        title.setCustomValidity("");
+        author.setCustomValidity("");
+        pc.setCustomValidity("");
+
+        // 2. set custom validation
+        if (!title.value.trim())
+            title.setCustomValidity("The book title must be filled!");
+
+        if (!author.value.trim())
+            author.setCustomValidity("The author name can't be empty!");
+
+        if (!pc.value.trim() || Number(pc.value) < 1)
+            pc.setCustomValidity("Total pages must be at least 1.");
     }
 
     // Initialize the app
